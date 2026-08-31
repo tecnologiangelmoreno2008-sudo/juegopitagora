@@ -1,4 +1,4 @@
-# juegopitagora
+# juegopitagora_2026
 <!DOCTYPE html>
 <html lang="es">
 <head>
