@@ -1,4 +1,4 @@
-# juegopitagora_2026
+
 
 <html lang="es">
 <head>
