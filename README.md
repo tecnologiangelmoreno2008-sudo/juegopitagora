@@ -1,1 +1,505 @@
 # juegopitagora
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juego de Pitágoras: Desafío Geométrico</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background-color: #08120e;
+      color: #e0f2e9;
+      padding: 30px 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 35px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #1a382c;
+    }
+    h1 {
+      color: #70e0a3;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+    .subtitle {
+      color: #8fbca7;
+      font-size: 1.1rem;
+    }
+    
+    /* Grid de los 5 puntos */
+    .sections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .card {
+      background: #122820;
+      border: 1px solid #1e4234;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: #42d18a;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .badge {
+      background: linear-gradient(135deg, #238b55, #42d18a);
+      color: #08120e;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-right: 12px;
+      box-shadow: 0 2px 8px rgba(66, 209, 138, 0.4);
+    }
+    .card-title {
+      font-size: 1.2rem;
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .card-content {
+      color: #b0d4c3;
+      font-size: 0.98rem;
+    }
+    .highlight {
+      color: #70e0a3;
+      font-weight: bold;
+    }
+    .math-block {
+      background: #07120e;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-family: 'Courier New', Courier, monospace;
+      color: #42d18a;
+      margin: 10px 0;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    /* Juego / Simulador Interactivo Mejorado */
+    .simulator-section {
+      background: #122820;
+      border: 1px solid #23523f;
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 40px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+    .section-heading {
+      color: #70e0a3;
+      font-size: 1.7rem;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+    .sim-container {
+      display: flex;
+      flex-direction: row;
+      gap: 25px;
+      align-items: stretch;
+    }
+    @media (max-width: 820px) {
+      .sim-container {
+        flex-direction: column;
+      }
+    }
+    .sim-controls {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #0b1a14;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #1a3c2e;
+    }
+    .sim-formula {
+      font-size: 1.4rem;
+      text-align: center;
+      margin-bottom: 12px;
+      font-style: italic;
+      color: #e0f2e9;
+      font-weight: 600;
+    }
+    .sim-calc {
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #42d18a;
+      background: #040a08;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      border: 1px solid #1a3c2e;
+    }
+    .slider-group {
+      margin-bottom: 16px;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+    }
+    .slider-label {
+      font-weight: bold;
+      font-style: italic;
+    }
+    .slider-val {
+      font-weight: bold;
+      font-family: monospace;
+    }
+    .slider-input {
+      width: 100%;
+      height: 8px;
+      border-radius: 5px;
+      background: #1c3d30;
+      outline: none;
+      cursor: pointer;
+    }
+    #rangeA { accent-color: #3b82f6; }
+    #rangeB { accent-color: #ec4899; }
+
+    /* Área visual y métricas */
+    .areas-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .area-box {
+      padding: 8px 5px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: bold;
+    }
+    .area-a { background: rgba(59, 130, 246, 0.15); border: 1px solid #3b82f6; color: #93c5fd; }
+    .area-b { background: rgba(236, 72, 153, 0.15); border: 1px solid #ec4899; color: #fbcfe8; }
+    .area-c { background: rgba(66, 209, 138, 0.15); border: 1px solid #42d18a; color: #a7f3d0; }
+
+    .sim-canvas-container {
+      flex: 1.3;
+      background-color: #050d0a;
+      border-radius: 12px;
+      border: 1px solid #1a3c2e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      min-height: 400px;
+      position: relative;
+    }
+    canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Seccion del Prompt */
+    .prompt-section {
+      background: #0d1f19;
+      border: 1px dashed #42d18a;
+      border-radius: 12px;
+      padding: 25px;
+    }
+    .prompt-title {
+      color: #42d18a;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .prompt-box {
+      background: #040a08;
+      padding: 15px;
+      border-radius: 8px;
+      color: #c2e2d3;
+      font-family: monospace;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <header>
+    <h1>Teorema de Pitágoras</h1>
+    <p class="subtitle">Investigación, Operaciones, Ejemplo Práctico y Juego Interactivo</p>
+  </header>
+
+  <!-- PUNTOS 1 AL 5 DE LA INVESTIGACIÓN -->
+  <div class="sections-grid">
+    
+    <!-- Punto 1 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="badge">1</div>
+        <div class="card-title">¿Qué es?</div>
+      </div>
+      <div class="card-content">
+        Es un principio fundamental de la geometría euclidiana que establece una relación proporcional entre los tres lados de cualquier <span class="highlight">triángulo rectángulo</span> (aquel que posee un ángulo recto exactamente de 90°).
+      </div>
+    </div>
+
+    <!-- Punto 2 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="badge">2</div>
+        <div class="card-title">La Fórmula</div>
+      </div>
+      <div class="card-content">
+        La suma de los cuadrados de los catetos es igual al cuadrado de la hipotenusa:
+        <div class="math-block">a² + b² = c²</div>
+        Donde <span class="highlight">a</span> y <span class="highlight">b</span> son los catetos (lados menores que forman el ángulo recto) y <span class="highlight">c</span> es la hipotenusa (lado mayor opuesto al ángulo recto).
+      </div>
+    </div>
+
+    <!-- Punto 3 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="badge">3</div>
+        <div class="card-title">Historia u Origen</div>
+      </div>
+      <div class="card-content">
+        Atribuido al filósofo y matemático griego <span class="highlight">Pitágoras de Samos</span> (siglo VI a. C.). Sin embargo, documentos antiguos demuestran que civilizaciones como los babilonios y egipcios ya aplicaban esta relación numérica en construcciones e inspección de tierras.
+      </div>
+    </div>
+
+    <!-- Punto 4 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="badge">4</div>
+        <div class="card-title">Ejemplo 3-4-5</div>
+      </div>
+      <div class="card-content">
+        Si los catetos miden <strong>a = 3</strong> y <strong>b = 4</strong>:
+        <div class="math-block">
+          3² + 4² = c²<br>
+          9 + 16 = 25<br>
+          c = √25 → <strong>c = 5</strong>
+        </div>
+        ¡El trío (3, 4, 5) es la terna pitagórica más conocida!
+      </div>
+    </div>
+
+    <!-- Punto 5 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="badge">5</div>
+        <div class="card-title">Aplicaciones</div>
+      </div>
+      <div class="card-content">
+        <ul>
+          <li><strong>Construcción:</strong> Escuadrar muros y estructuras a 90°.</li>
+          <li><strong>Navegación / GPS:</strong> Cálculo de distancias directas en coordenadas.</li>
+          <li><strong>Tecnología:</strong> Medición en pulgadas de la diagonal de pantallas.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JUEGO INTERACTIVO MEJORADO Y MAS CREATIVO -->
+  <div class="simulator-section">
+    <h2 class="section-heading">⚡ Juego de Pitágoras: Desafío Geométrico 📐</h2>
+    <div class="sim-container">
+      
+      <div class="sim-controls">
+        <div>
+          <div class="sim-formula">a² + b² = c²</div>
+          <div class="sim-calc" id="calcText">c = √(12.0² + 9.0²) = 15.00</div>
+          
+          <div class="slider-group">
+            <div class="slider-header">
+              <span class="slider-label" style="color: #60a5fa;">Cateto a</span>
+              <span class="slider-val" style="color: #60a5fa;" id="valA">12.0</span>
+            </div>
+            <input type="range" id="rangeA" class="slider-input" min="3" max="18" step="0.5" value="12">
+          </div>
+          
+          <div class="slider-group">
+            <div class="slider-header">
+              <span class="slider-label" style="color: #f472b6;">Cateto b</span>
+              <span class="slider-val" style="color: #f472b6;" id="valB">9.0</span>
+            </div>
+            <input type="range" id="rangeB" class="slider-input" min="3" max="18" step="0.5" value="9">
+          </div>
+        </div>
+
+        <div class="areas-grid">
+          <div class="area-box area-a">
+            Área A<br><span id="areaAVal">144</span>
+          </div>
+          <div class="area-box area-b">
+            Área B<br><span id="areaBVal">81</span>
+          </div>
+          <div class="area-box area-c">
+            Área C<br><span id="areaCVal">225</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-canvas-container">
+        <canvas id="pythagorasCanvas" width="450" height="450"></canvas>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PROMPT EXACTO UTILIZADO -->
+  <div class="prompt-section">
+    <div class="prompt-title">
+      🤖 Prompt exacto utilizado para la Inteligencia Artificial:
+    </div>
+    <div class="prompt-box">"Actúa como un experto en educación matemática y desarrollo web interactivo. Ayúdame a investigar a fondo el Teorema de Pitágoras cubriendo 5 puntos clave: 1) ¿Qué es?, 2) La fórmula matemática, 3) Historia y origen, 4) Ejemplo práctico con operaciones paso a paso (tríada 3-4-5), y 5) Aplicaciones en la vida real. Además, crea un juego interactivo en HTML5 y Canvas con el título creativo '⚡ Juego de Pitágoras: Desafío Geométrico 📐'. Mejora el canvas dinámicamente con colores diferenciados para cada área (a², b², c²), efectos de brillo glowing, cálculo visual en tiempo real de las áreas exactas y una disposición centrada y responsiva que evite que la hipotenusa salga del área de visión."</div>
+  </div>
+
+</div>
+
+<script>
+  const rangeA = document.getElementById('rangeA');
+  const rangeB = document.getElementById('rangeB');
+  const valA = document.getElementById('valA');
+  const valB = document.getElementById('valB');
+  const calcText = document.getElementById('calcText');
+  const areaAVal = document.getElementById('areaAVal');
+  const areaBVal = document.getElementById('areaBVal');
+  const areaCVal = document.getElementById('areaCVal');
+  
+  const canvas = document.getElementById('pythagorasCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function update() {
+    const a = parseFloat(rangeA.value);
+    const b = parseFloat(rangeB.value);
+    const c = Math.sqrt(a * a + b * b);
+
+    const areaA = a * a;
+    const areaB = b * b;
+    const areaC = c * c;
+
+    valA.textContent = a.toFixed(1);
+    valB.textContent = b.toFixed(1);
+    calcText.textContent = `c = √(${a.toFixed(1)}² + ${b.toFixed(1)}²) = ${c.toFixed(2)}`;
+
+    areaAVal.textContent = areaA.toFixed(1);
+    areaBVal.textContent = areaB.toFixed(1);
+    areaCVal.textContent = areaC.toFixed(1);
+
+    draw(a, b, c);
+  }
+
+  function draw(a, b, c) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Escala adaptativa para mantener el gráfico bien centrado y visible
+    const scale = 7; 
+    const originX = 180;
+    const originY = 270;
+
+    const scaledA = a * scale;
+    const scaledB = b * scale;
+
+    const p1 = { x: originX, y: originY };
+    const p2 = { x: originX + scaledA, y: originY };
+    const p3 = { x: originX, y: originY - scaledB };
+
+    // 1. Cuadrado Cateto a (Azul)
+    ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 2;
+    ctx.fillRect(p1.x, p1.y, scaledA, scaledA);
+    ctx.strokeRect(p1.x, p1.y, scaledA, scaledA);
+
+    // 2. Cuadrado Cateto b (Rosa)
+    ctx.fillStyle = 'rgba(236, 72, 153, 0.2)';
+    ctx.strokeStyle = '#ec4899';
+    ctx.lineWidth = 2;
+    ctx.fillRect(p1.x - scaledB, p3.y, scaledB, scaledB);
+    ctx.strokeRect(p1.x - scaledB, p3.y, scaledB, scaledB);
+
+    // 3. Cuadrado Hipotenusa c (Verde Neón con rotación)
+    const angle = Math.atan2(scaledB, scaledA);
+    ctx.save();
+    ctx.translate(p2.x, p2.y);
+    ctx.rotate(-angle);
+    ctx.fillStyle = 'rgba(66, 209, 138, 0.2)';
+    ctx.strokeStyle = '#42d18a';
+    ctx.lineWidth = 2.5;
+    ctx.fillRect(0, 0, c * scale, -c * scale);
+    ctx.strokeRect(0, 0, c * scale, -c * scale);
+    ctx.restore();
+
+    // Triángulo Central (Líneas destacadas)
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.lineTo(p3.x, p3.y);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Ángulo Recto
+    const sqSize = 12;
+    ctx.strokeStyle = '#70e0a3';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(p1.x + sqSize, p1.y);
+    ctx.lineTo(p1.x + sqSize, p1.y - sqSize);
+    ctx.lineTo(p1.x, p1.y - sqSize);
+    ctx.stroke();
+
+    // Etiquetas
+    ctx.font = 'bold 15px Segoe UI, sans-serif';
+    
+    ctx.fillStyle = '#60a5fa';
+    ctx.fillText(`a = ${a.toFixed(1)}`, p1.x + scaledA / 2 - 15, p1.y + 22);
+
+    ctx.fillStyle = '#f472b6';
+    ctx.fillText(`b = ${b.toFixed(1)}`, p1.x - scaledB / 2 - 25, p1.y - scaledB / 2);
+
+    ctx.fillStyle = '#42d18a';
+    ctx.fillText(`c = ${c.toFixed(2)}`, p1.x + scaledA / 2 + 10, p1.y - scaledB / 2 - 12);
+  }
+
+  rangeA.addEventListener('input', update);
+  rangeB.addEventListener('input', update);
+
+  update();
+</script>
+
+</body>
+</html>
